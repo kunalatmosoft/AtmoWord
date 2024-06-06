@@ -1,3 +1,4 @@
+```python
 # Step 1: Import Libraries'
 !pip install matplotlib
 !pip install tensorflow
@@ -75,7 +76,7 @@ plt.imshow(example_image.reshape(28, 28), cmap=plt.cm.binary)
 plt.title(f'Predicted: {class_names[np.argmax(prediction)]}') #Use np since it is now imported
 plt.show()
 
-
+```
 
 
 Certainly! Let's break down the code snippet with a more expert-level explanation:
