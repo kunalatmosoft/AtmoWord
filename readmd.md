@@ -1,3 +1,83 @@
+# Step 1: Import Libraries'
+!pip install matplotlib
+!pip install tensorflow
+!pip install numpy
+import matplotlib.pyplot as plt
+
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+import matplotlib.pyplot as plt
+import numpy as np # Import numpy for array manipulation
+
+# Step 2: Load and Preprocess Data
+# Load the Fashion MNIST dataset
+(train_images, train_labels), (test_images, test_labels) = datasets.fashion_mnist.load_data()
+
+# Normalize the images to the range [0, 1]
+train_images, test_images = train_images / 255.0, test_images / 255.0
+
+# Reshape the data to include a channel dimension
+train_images = train_images.reshape((train_images.shape[0], 28, 28, 1))
+test_images = test_images.reshape((test_images.shape[0], 28, 28, 1))
+
+# Map class names
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+# Step 3: Define the Model Architecture
+model = models.Sequential([
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.Flatten(),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+# Step 4: Compile the Model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Step 5: Train the Model
+history = model.fit(train_images, train_labels, epochs=2, 
+                    validation_data=(test_images, test_labels))
+
+# Step 6: Evaluate the Model
+test_loss, test_acc = model.evaluate(test_images, test_labels)
+print(f'Test accuracy: {test_acc}')
+
+# Step 7: Save the Model
+model.save('fashion_mnist_model.h5')
+
+# Additional: Plot training and validation accuracy over epochs
+plt.plot(history.history['accuracy'], label='accuracy')
+plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.ylim([0, 1])
+plt.legend(loc='lower right')
+plt.show()
+
+# Additional: Load the model and make a prediction
+loaded_model = tf.keras.models.load_model('fashion_mnist_model.h5')
+
+# Load an example image from the test set
+example_image = test_images[1]
+
+# Make a prediction
+prediction = loaded_model.predict(np.expand_dims(example_image, axis=0)) #Use np since it is now imported
+
+# Display the image and the predicted label
+plt.imshow(example_image.reshape(28, 28), cmap=plt.cm.binary)
+plt.title(f'Predicted: {class_names[np.argmax(prediction)]}') #Use np since it is now imported
+plt.show()
+
+
+
+
 Certainly! Let's break down the code snippet with a more expert-level explanation:
 
 ```python
